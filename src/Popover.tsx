@@ -41,12 +41,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   content: {
+    opacity: 0,
     flexDirection: 'column',
     position: 'absolute',
     backgroundColor: '#f2f2f2',
     padding: 8,
   },
   arrow: {
+    opacity: 0,
     position: 'absolute',
     borderTopColor: '#f2f2f2',
     borderRightColor: 'transparent',
@@ -141,6 +143,7 @@ export class Popover extends React.PureComponent<PopoverProps, PopoverState> {
   constructor(props: PopoverProps) {
     super(props);
     this.state = {
+      showView: { opacity: Platform.OS === "ios" ? 1 : 0 },
       contentSize: { width: 0, height: 0 },
       anchor: { x: 0, y: 0 },
       origin: { x: 0, y: 0 },
@@ -235,6 +238,9 @@ export class Popover extends React.PureComponent<PopoverProps, PopoverState> {
       easing: this.props.easing!(show),
       useNativeDriver: !!this.props.useNativeDriver,
     }).start(doneCallback);
+    setTimeout(() => {
+      this.setState({ showView: { opacity: 1 } })
+    }, 10)
   };
 
   private onHidden = () => this.setState({ visible: false, isAwaitingShow: false });
@@ -324,7 +330,7 @@ export class Popover extends React.PureComponent<PopoverProps, PopoverState> {
   };
 
   render() {
-    const { origin, visible } = this.state;
+    const { origin, visible, showView } = this.state;
     const { onClose, onDismiss, supportedOrientations, useNativeDriver } = this.props;
     const computedStyles = this.computeStyles();
     const contentSizeAvailable = this.state.contentSize.width;
@@ -344,10 +350,10 @@ export class Popover extends React.PureComponent<PopoverProps, PopoverState> {
           </TouchableWithoutFeedback>
 
           <Animated.View style={computedStyles.popover} useNativeDriver={useNativeDriver}>
-            <Animated.View onLayout={this.measureContent} style={computedStyles.content} useNativeDriver={useNativeDriver} >
+            <Animated.View onLayout={this.measureContent} style={[computedStyles.content, showView]} useNativeDriver={useNativeDriver} >
               {this.props.children}
             </Animated.View>
-            <Animated.View style={computedStyles.arrow} useNativeDriver={useNativeDriver} />
+            <Animated.View style={[computedStyles.arrow, showView]} useNativeDriver={useNativeDriver} />
           </Animated.View>
 
         </View>
