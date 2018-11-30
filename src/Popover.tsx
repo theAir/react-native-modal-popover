@@ -85,6 +85,7 @@ export interface PopoverProps {
 }
 
 export interface PopoverState extends Geometry {
+  showView: StyleProp<ViewStyle>;
   contentSize: Size;
   visible: boolean;
   isAwaitingShow: boolean;
