@@ -242,9 +242,12 @@ export class Popover extends React.PureComponent<PopoverProps, PopoverState> {
     setTimeout(() => {
       this.setState({ showView: { opacity: 1 } })
     }, 10)
+    setTimeout(() => {
+      doneCallback ? doneCallback() : null;
+    }, this.props.duration ? this.props.duration - 20 : 300)
   };
 
-  private onHidden = () => this.setState({ visible: false, isAwaitingShow: false });
+  private onHidden = () => this.setState({ visible: false, isAwaitingShow: false, showView: { opacity: 0 } });
 
   private computeStyles = () => {
     const { animation, anchor, origin } = this.state;
